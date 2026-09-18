@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FlashVSR API — Python client &amp; hosted endpoint</title>
+<meta name="description" content="Python client for a FlashVSR-style super-resolution API: diffusion-based upscaling through a hosted SeedVR2 endpoint">
+<link rel="canonical" href="https://flashvsr.github.io/flashvsr-api/"><meta name="google-site-verification" content="8NEKdWXBIiAKuN0mqEqYwTB3yB8iIW-_cQmXANbDTs8" /><meta name="msvalidate.01" content="91A75274D586670BEE99EC35A630C098">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is there a FlashVSR API?", "acceptedAnswer": {"@type": "Answer", "text": "Not from the original authors; FlashVSR is released as open weights. This client exposes the same diffusion-based super-resolution capability through a hosted endpoint (bytedance/seedvr2-upscale) that you call over HTTPS. The hosted endpoint works on single images."}}, {"@type": "Question", "name": "How much does the FlashVSR API cost?", "acceptedAnswer": {"@type": "Answer", "text": "The hosted bytedance/seedvr2-upscale model is $0.004 per run. Billing is per prediction; there is no hourly GPU charge."}}, {"@type": "Question", "name": "Can I run FlashVSR without a GPU?", "acceptedAnswer": {"@type": "Answer", "text": "With this client, yes: inference runs on the hosted service and your code only makes HTTP requests. Self-hosting FlashVSR needs a CUDA GPU; the authors' throughput figures are for an A100."}}, {"@type": "Question", "name": "Does this client work with the original FlashVSR repo or ComfyUI?", "acceptedAnswer": {"@type": "Answer", "text": "No. It does not load the OpenImagingLab/FlashVSR checkpoints and it is not a ComfyUI node. It is a network client for the hosted endpoint. If you need FlashVSR's streaming video pipeline itself, run the official repository locally."}}, {"@type": "Question", "name": "What input formats does it accept?", "acceptedAnswer": {"@type": "Answer", "text": "A publicly reachable image URL (image_url) in .jpg, .png or .webp. Optional fields: upscale_mode (factor or target), upscale_factor, target_resolution, seed, noise_scale and output_format. The output is a URL to the upscaled image. Video files are not accepted; upscale frames individually."}}, {"@type": "Question", "name": "Is this the official FlashVSR SDK?", "acceptedAnswer": {"@type": "Answer", "text": "No. This is an independent, community-maintained client and is not affiliated with OpenImagingLab or ByteDance. The official project lives at https://github.com/OpenImagingLab/FlashVSR."}}]}</script>
+<style>
+:root{--ink:#16191d;--muted:#5b6470;--line:#e3e6ea;--accent:#2563eb;--bg:#fff}
+*{box-sizing:border-box}body{margin:0;font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+main{max-width:860px;margin:0 auto;padding:48px 20px 80px}h1{font-size:34px;line-height:1.2;margin:0 0 12px}h2{font-size:22px;margin:40px 0 10px}
+.lead{font-size:18px;color:var(--muted)}.cta{display:inline-block;background:var(--accent);color:#fff;padding:12px 22px;border-radius:8px;font-weight:600;text-decoration:none;margin:12px 8px 12px 0}
+.ghost{display:inline-block;border:1px solid var(--line);padding:11px 20px;border-radius:8px;text-decoration:none;color:var(--ink)}
+pre{background:#0f172a;color:#e2e8f0;padding:16px;border-radius:10px;overflow:auto;font-size:14px}code{font-family:ui-monospace,Menlo,monospace}
+details{border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:8px 0}summary{cursor:pointer;font-weight:600}
+footer{margin-top:56px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:14px}
+</style></head><body><main>
+<h1>FlashVSR API for Python</h1>
+<p class="lead">Python client for a FlashVSR-style super-resolution API: diffusion-based upscaling through a hosted SeedVR2 endpoint</p>
+<p><a class="cta" href="https://synexa.ai/explore/bytedance/seedvr2-upscale" rel="noopener">Run FlashVSR in the browser →</a> <a class="ghost" href="https://github.com/flashvsr/flashvsr-api">View on GitHub</a></p>
+<h2>Install</h2>
+<pre><code>pip install git+https://github.com/flashvsr/flashvsr-api.git
+export SYNEXA_API_KEY="sk-..."</code></pre>
+<h2>Quickstart</h2>
+<pre><code>import flashvsr_api
+
+output = flashvsr_api.run({
+    "image_url": "https://example.com/input.png"
+})
+print(output)</code></pre>
+<h2>Hosted models</h2>
+<ul><li><a href="https://synexa.ai/explore/bytedance/seedvr2-upscale" rel="noopener">bytedance/seedvr2-upscale</a> — SeedVR2 restores and upscales images, recovering detail rather than simply interpolating pixels. <em>($0.004 / run)</em></li></ul>
+<h2>About FlashVSR</h2>
+<p>FlashVSR is a one-step, streaming diffusion model for video super-resolution from OpenImagingLab, combining distillation to a single denoising step, locality-constrained sparse attention and a tiny conditional decoder to reach near real-time throughput on an A100. This client calls a hosted super-resolution endpoint (bytedance/seedvr2-upscale, serving ByteDance's SeedVR2) from Python with one dependency: send an image URL and a target resolution or factor, get back a restored, upscaled image at $0.004 per run. FlashVSR's own weights can be self-hosted from the official repository.</p>
+<h2>FAQ</h2>
+<details><summary>Is there a FlashVSR API?</summary><p>Not from the original authors; FlashVSR is released as open weights. This client exposes the same diffusion-based super-resolution capability through a hosted endpoint (bytedance/seedvr2-upscale) that you call over HTTPS. The hosted endpoint works on single images.</p></details><details><summary>How much does the FlashVSR API cost?</summary><p>The hosted bytedance/seedvr2-upscale model is $0.004 per run. Billing is per prediction; there is no hourly GPU charge.</p></details><details><summary>Can I run FlashVSR without a GPU?</summary><p>With this client, yes: inference runs on the hosted service and your code only makes HTTP requests. Self-hosting FlashVSR needs a CUDA GPU; the authors' throughput figures are for an A100.</p></details><details><summary>Does this client work with the original FlashVSR repo or ComfyUI?</summary><p>No. It does not load the OpenImagingLab/FlashVSR checkpoints and it is not a ComfyUI node. It is a network client for the hosted endpoint. If you need FlashVSR's streaming video pipeline itself, run the official repository locally.</p></details><details><summary>What input formats does it accept?</summary><p>A publicly reachable image URL (image_url) in .jpg, .png or .webp. Optional fields: upscale_mode (factor or target), upscale_factor, target_resolution, seed, noise_scale and output_format. The output is a URL to the upscaled image. Video files are not accepted; upscale frames individually.</p></details><details><summary>Is this the official FlashVSR SDK?</summary><p>No. This is an independent, community-maintained client and is not affiliated with OpenImagingLab or ByteDance. The official project lives at https://github.com/OpenImagingLab/FlashVSR.</p></details>
+<p><a class="cta" href="https://synexa.ai/explore/bytedance/seedvr2-upscale" rel="noopener">Get an API key and run FlashVSR →</a></p>
+<footer>Independent client for the hosted FlashVSR endpoint on Synexa. Not affiliated with the model's authors. MIT licensed.</footer>
+</main></body></html>
